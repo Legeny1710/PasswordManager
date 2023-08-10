@@ -7,7 +7,7 @@ import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     password_input.delete(0, END)
-    char = "1234567890@£$%^&*()qwertyuiopasdfghjklzxcvbnm"
+    char = "1234567890@%^&*()qwertyuiopasdfghjklzxcvbnm"
     password = ""
     for i in range(8):
         password += random.choice(char)
@@ -32,13 +32,18 @@ def save_password():
     if website == "" or username == "" or password == "":
         messagebox.showwarning(title="ERROR", message="You must fill all the fields to save the password!")
     else:
-        with open("data.json", "r") as data_file:
-            data = json.load(data_file)
+        try:
+            with open("data.json", "r") as data_file:
+                data = json.load(data_file)
+
+        except FileNotFoundError:
+            with open("data.json", "w") as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
             data.update(new_data)
-
-        with open("data.json", "w") as data_file:
-            json.dump(data, data_file, indent=4)
-
+            with open("data.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+        finally:
             website_input.delete(0, END)
             password_input.delete(0, END)
 
