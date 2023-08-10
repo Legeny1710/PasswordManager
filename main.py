@@ -4,6 +4,7 @@ import random
 import json
 
 
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     password_input.delete(0, END)
@@ -47,6 +48,30 @@ def save_password():
             website_input.delete(0, END)
             password_input.delete(0, END)
 
+
+# ---------------------------- Search/Find Password ----------------------------#
+def find_password():
+    website = website_input.get()
+    username = user_name_input.get()
+    password = password_input.get()
+
+    try:
+        with open("data.json", "r") as data:
+            d = json.load(data)
+    except FileNotFoundError:
+        messagebox.showwarning(title="ERROR",message="No Data file Found")
+    else:
+        found = False
+        for website_name, details in d.items():
+            if website_name == website:
+                found = True
+                messagebox.showinfo(title="Search Result", message=f"Username: {details['username']}\n Password: {details['password']}")
+            elif website_name != website:
+                found = False
+
+        if not found:
+            messagebox.showwarning(title="Search Result", message="No details for this website exists")
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Password Manager - YPass")
@@ -61,8 +86,8 @@ canvas.grid(column=1, row=1, columnspan=3)
 website_text = Label(text="Website:")
 website_text.grid(column=1, row=2 )
 
-website_input = Entry(width=35)
-website_input.grid(column=2, row=2, columnspan=2)
+website_input = Entry(width=18)
+website_input.grid(column=2, row=2)
 website_input.focus()
 
 #Email/Username entry
@@ -86,6 +111,10 @@ password_generate_button.grid(column=3, row=4)
 #Add
 add_button = Button(text="Add", width=45, command=save_password)
 add_button.grid(column=1, row=5, columnspan=3)
+
+#search button
+search_button = Button(text="Search", width=12, command=find_password)
+search_button.grid(column=3, row=2)
 
 
 
