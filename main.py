@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import random
+import json
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -16,15 +17,27 @@ def generate_password():
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save_password():
 
+
     website = website_input.get()
     username = user_name_input.get()
     password = password_input.get()
 
-    is_ok = messagebox.askokcancel(title="Add Password", message=f"These are the details entered: \n Email: {username} \n Password: {password} \n Are you sure you want to save?")
+    new_data = {
+        website: {
+            "username": username,
+            "password": password
+        }
+    }
 
-    if is_ok:
-        with open("data.txt", "a") as file:
-            file.write(f'{website} | {username} | {password}\n')
+    if website == "" or username == "" or password == "":
+        messagebox.showwarning(title="ERROR", message="You must fill all the fields to save the password!")
+    else:
+        with open("data.json", "r") as data_file:
+            data = json.load(data_file)
+            data.update(new_data)
+
+        with open("data.json", "w") as data_file:
+            json.dump(data, data_file, indent=4)
 
             website_input.delete(0, END)
             password_input.delete(0, END)
